@@ -1,9 +1,11 @@
-const a = "NJ here";
+import ChatApp from "./Components/ChatApp";
+
+const a = "Developed by NJ";
 export default function Home() {
   return (
    <>
    {a}
-   <h1>Hi!!!</h1>
+   <ChatApp />
    </>
   );
 }
