@@ -1,11 +1,11 @@
-import ChatApp from "./Components/ChatApp";
-
+import Login from "./Components/Authentication/Login";
 const a = "Developed by NJ";
+
 export default function Home() {
   return (
    <>
-   {a}
-   <ChatApp />
+   <Login />
+   
    </>
   );
 }
