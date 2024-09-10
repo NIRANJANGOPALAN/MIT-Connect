@@ -1,38 +1,86 @@
+/* Global Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f2f5;
+    background-color: #F5F5F5; /* Light Gray */
+    color: #333; /* Dark Gray for text */
   }
-
-.Title {
-     background-color: rgb(41, 4, 41);
-     color: white;
-     width: auto;
-     height: 50px;
-     text-align: center;
-}
   
-  .login {
-    max-width: 300px;
-    margin: 100px auto;
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
     padding: 20px;
-    background-color: white;
+  }
+  
+  /* Login Styles */
+  .login, .chat-container {
+    background-color: #FFFFFF; /* White */
+    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   }
   
-  .chat-container {
+  .login h2, .chat-room h2 {
+    margin-top: 0;
+    color: #0033A0; /* Navy Blue */
+    text-align: center;
+  }
+  
+  /* Form Styles */
+  .login form > div {
+    margin-bottom: 15px;
+  }
+  
+  .login label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333; /* Dark Gray */
+  }
+  
+  .login input, .chat-room input {
+    width: 200px;
+    padding: 10px;
+    border: 2px solid #0033A0; /* Navy Blue border */
+    border-radius: 4px;
+    background-color: #F5F5F5; /* Light Gray for input */
+    color: #333; /* Dark Gray */
+  }
+  
+  .button-group {
     display: flex;
-    flex-direction: column;
-    height: 100vh;
+    justify-content: space-between;
   }
   
-  .header {
-    background-color: #420645;
-    color: white;
+  button {
     padding: 10px 20px;
-    text-align: right;
+    background-color: #C8102E; /* Crimson Red */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #A71D2D; /* Darker Red on hover */
+  }
+  
+  button[type="button"] {
+    background-color: #007BFF; /* Blue for clear button */
+  }
+  
+  .error {
+    color: #C8102E; /* Error color */
+    margin-bottom: 10px;
+  }
+  
+  /* Chat Styles */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
   }
   
   .user-info {
@@ -43,56 +91,8 @@ body {
     font-weight: bold;
   }
   
-  .chat-room {
-    flex-grow: 1;
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2 {
-    margin-top: 0;
-    color: #333;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  button {
-    padding: 10px 20px;
-    background-color: darkblue  ;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  button[type="button"] {
-    background-color: #f44336;
-  }
-  
-  .error {
-    color: #f44336;
-    margin-bottom: 10px;
-    text-align: center;
+  .logout-button {
+    background-color: #C8102E; /* Crimson Red for logout button */
   }
   
   .messages {
@@ -100,23 +100,29 @@ body {
     overflow-y: auto;
     border: 1px solid #ccc;
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    background-color: #FFFFFF; /* White for message area */
   }
   
   .message {
     margin-bottom: 10px;
   }
-  .logout-button {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
   
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  /* Responsive Styles */
+  @media (max-width: 600px) {
+    .container {
+      padding: 10px;
+    }
+  
+    .login, .chat-container {
+      padding: 15px;
+    }
+  
+    button {
+      padding: 8px 10px;
+    }
+  
+    input {
+      padding: 8px;
+    }
   }

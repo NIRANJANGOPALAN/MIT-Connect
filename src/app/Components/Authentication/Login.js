@@ -1,17 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import Chat from '../Chat/Chat';
 import './Login.css'
-const HARDCODED_PASSWORD = 'Test01';
 
-export default function Home() {
+export default function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -20,13 +17,26 @@ export default function Home() {
       return;
     }
 
-    if (password !== HARDCODED_PASSWORD) {
-      setError('Invalid password');
-      return;
-    }
+    try {
+      const response = await fetch('http://localhost:5000/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    // Successful login
-    setIsLoggedIn(true);
+      const data = await response.json();
+
+      if (response.ok) {
+        onLogin(username, data.session_id);
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (error) {
+      console.log("password",password);
+      setError('An error occurred. Please try again.');
+    }
   };
 
   const handleClear = () => {
@@ -35,21 +45,7 @@ export default function Home() {
     setError('');
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUsername('');
-    setPassword('');
-  };
-
-  if (isLoggedIn) {
-    return <Chat username={username} onLogout={handleLogout} />;
-  }
-
   return (
-  <>
- <header className='Title'>
-    VAC-Connect: test version (under developement)
- </header>
     <div className="login">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
@@ -80,6 +76,5 @@ export default function Home() {
         </div>
       </form>
     </div>
-    </>
   );
 }
