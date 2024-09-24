@@ -2,15 +2,30 @@
 
 import { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { IconButton, Tooltip } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import "./Chat.css";
 
 let socket;
+
+// Initialize the Generative AI model
+const genAI = new GoogleGenerativeAI('AIzaSyC_IfQGhoWi03gsMAlhSJyCd1LXx8i_xbA'); // Replace with your actual API key
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export default function Chat({ username, sessionId, onLogout }) {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef(null);
+  const [aiInput, setAiInput] = useState('');
+  const [aiMessages, setAiMessages] = useState([]);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [conversation, setConversation] = useState([]);
+  const aiMessagesEndRef = useRef(null);
+  const [activeTab, setActiveTab] = useState('chat');
+
 
   useEffect(() => {
     socket = io('http://localhost:5000', {
@@ -55,19 +70,57 @@ export default function Chat({ username, sessionId, onLogout }) {
   }, [sessionId, onLogout]);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    scrollToBottom(activeTab);
+  }, [messages, aiMessages, activeTab]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = (type) => {
+    if (type === 'chat') {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      aiMessagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (message.trim() && isConnected) {
+    if (message.trim() && isConnected && socket) {
       const newMessage = { username, text: message };
       socket.emit('chat message', newMessage);
       setMessage('');
+    }
+  };
+
+  const handleAiSubmit = async (e) => {
+    e.preventDefault();
+    if (aiInput.trim()) {
+      setIsAiLoading(true);
+      const userMessage = { role: 'user', content: aiInput };
+      setAiMessages(prev => [...prev, userMessage]);
+      setAiInput('');
+      try {
+        const result = await model.generateContent(aiInput);
+        const response = await result.response;
+        const aiMessage = { role: 'ai', content: response.text() };
+        setAiMessages(prev => [...prev, aiMessage]);
+
+        // Update conversation state
+        setConversation(prev => [
+          ...prev,
+          {
+            username,
+            userMessage: userMessage.content,
+            aiMessage: aiMessage.content
+          }
+        ]);
+
+      } catch (error) {
+        console.error('Error:', error);
+        const errorMessage = { role: 'ai', content: 'An error occurred while processing your request.' };
+        setAiMessages(prev => [...prev, errorMessage]);
+      } finally {
+        setIsAiLoading(false);
+      }
     }
   };
 
@@ -76,35 +129,117 @@ export default function Chat({ username, sessionId, onLogout }) {
     onLogout();
   };
 
+  const clearAiChat = () => {
+    setAiMessages([]);
+    setConversation([]);
+  };
+
+  const downloadConversation = () => {
+    const dataStr = JSON.stringify(conversation, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+    const exportFileDefaultName = 'conversation.json';
+
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  };
+
   return (
-    <div className="chat-container">
-      <header className="chat-header">
-        <h1>Chat Room</h1>
+    <div className="app-container">
+      <header className="top-menu">
+        <h1 className="app-title">VAC-Connect</h1>
         <div className="user-info">
           Logged in as: <span className="username">{username}</span>
           <button onClick={handleLogout} className="logout-button">Logout</button>
         </div>
       </header>
-      <div className="chat-messages">
-        {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.username === username ? 'own-message' : ''}`}>
-            <strong>{msg.username}: </strong>
-            <span>{msg.text}</span>
+
+      <main className="main-content">
+        {/* Left and Center area for future features */}
+        <div className="feature-area">
+          {/* Additional features can be added here */}
+          <p>Add your features here!</p>
+        </div>
+
+        {/* Chat and AI container aligned to the right */}
+        <div className="chat-container">
+          <div className="tab-selector">
+            <button 
+              className={`tab-button ${activeTab === 'chat' ? 'active' : ''}`} 
+              onClick={() => setActiveTab('chat')}
+            >
+              Chat
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'ai' ? 'active' : ''}`} 
+              onClick={() => setActiveTab('ai')}
+            >
+              AI
+            </button>
           </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-      <form onSubmit={handleSubmit} className="chat-input-form">
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type a message..."
-          className="chat-input"
-        />
-        <button type="submit" className="send-button" disabled={!isConnected}>Send</button>
-      </form>
-      {!isConnected && <div className="connection-status">Disconnected from server. Trying to reconnect...</div>}
+
+          {activeTab === 'chat' && (
+            <div className="chat-content">
+              <div className="chat-messages">
+                {messages.map((msg, index) => (
+                  <div key={index} className={`message ${msg.username === username ? 'own-message' : ''}`}>
+                    <strong>{msg.username}: </strong>
+                    <span>{msg.text}</span>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+              <form onSubmit={handleSubmit} className="chat-input-form">
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Type a message..."
+                  className="chat-input"
+                />
+                <button type="submit" className="send-button" disabled={!isConnected}>Send</button>
+              </form>
+              {!isConnected && <div className="connection-status">Disconnected from server. Trying to reconnect...</div>}
+            </div>
+          )}
+
+          {activeTab === 'ai' && (
+            <div className="ai-content">
+              <div className="ai-messages">
+                {aiMessages.map((msg, index) => (
+                  <div key={index} className={`ai-message ${msg.role}`}>
+                    <strong>{msg.role === 'user' ? 'You:' : 'AI:'}</strong> {msg.content}
+                  </div>
+                ))}
+                <div ref={aiMessagesEndRef} />
+              </div>
+              <form onSubmit={handleAiSubmit} className="ai-input-form">
+                <input
+                  type="text"
+                  value={aiInput}
+                  onChange={(e) => setAiInput(e.target.value)}
+                  placeholder="Ask AI something..."
+                  className="ai-input"
+                />
+                <button type="submit" className="ai-send-button" disabled={isAiLoading}>
+                  {isAiLoading ? 'Processing...' : 'Ask AI'}
+                </button>
+                <Tooltip title="Download Conversation">
+                  <IconButton onClick={downloadConversation} >
+                    <DownloadIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Clear Chat">
+                  <IconButton onClick={clearAiChat}>
+                    <DeleteSweepIcon />
+                  </IconButton>
+                </Tooltip>
+              </form>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

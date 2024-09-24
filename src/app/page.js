@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import './page.module.css'
+import { useEffect, useState } from 'react';
+import './page.css'
 import Login from './Components/Authentication/Login';
 import Chat from './Components/Chat/Chat';
 
@@ -12,7 +12,18 @@ export default function Home() {
   const handleLogin = (name, sid) => {
     setUsername(name);
     setSessionId(sid);
+    localStorage.setItem('username',name);
+    localStorage.setItem('sessionId', sid);
   };
+
+  useEffect(() =>{
+    const storedUsername = localStorage.getItem('username');
+    const storedSessionId = localStorage.getItem('sessionId');
+    if(storedUsername && storedSessionId){
+      setUsername(storedUsername);
+      setSessionId(storedSessionId)
+    }
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -28,11 +39,13 @@ export default function Home() {
     }
     setUsername('');
     setSessionId('');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('sessionId');
   };
 
   return (
     <div className="container">
-      {username ? (
+      {username && sessionId ? (
         <Chat username={username} sessionId={sessionId} onLogout={handleLogout} />
       ) : (
         <Login onLogin={handleLogin} />
