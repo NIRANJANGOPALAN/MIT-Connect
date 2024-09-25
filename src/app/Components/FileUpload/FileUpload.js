@@ -3,7 +3,7 @@
 import { useState, useRef  } from 'react';
 import styles from './FileUpload..module.css';
 
-const FileUpload = () => {
+const FileUpload = ({onFileSelect}) => {
   const [fileName, setFileName] = useState('No file chosen');
   const fileInputRef = useRef(null);
 
@@ -11,6 +11,9 @@ const FileUpload = () => {
     const file = event.target.files[0];
     console.log("file selected",file);
     setFileName(file ? file.name : 'No file chosen');
+    if(file){
+      onFileSelect(file);
+    }
   };
 
   const handleClearFile = () =>{
@@ -18,6 +21,7 @@ const FileUpload = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = ''; // Clear the input value
       setFileName('No file chosen'); // Reset displayed name
+    onFileSelect(null);
     }
   }
 

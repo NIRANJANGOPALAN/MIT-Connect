@@ -6,6 +6,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { IconButton, Tooltip } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import FileUpload from '../FileUpload/FileUpload';
+import FileProcess from '../FileProcess/FileProcess';
+import Bar from '../Charts/Bar';
 import "./Chat.css";
 
 let socket;
@@ -25,7 +28,7 @@ export default function Chat({ username, sessionId, onLogout }) {
   const [conversation, setConversation] = useState([]);
   const aiMessagesEndRef = useRef(null);
   const [activeTab, setActiveTab] = useState('chat');
-
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     socket = io('http://localhost:5000', {
@@ -80,7 +83,7 @@ export default function Chat({ username, sessionId, onLogout }) {
       aiMessagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
-
+ 
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -124,6 +127,10 @@ export default function Chat({ username, sessionId, onLogout }) {
     }
   };
 
+  const handleFileSelect = (file) => {
+    setSelectedFile(file);
+  };
+
   const handleLogout = () => {
     socket.disconnect();
     onLogout();
@@ -158,21 +165,27 @@ export default function Chat({ username, sessionId, onLogout }) {
       <main className="main-content">
         {/* Left and Center area for future features */}
         <div className="feature-area">
+          <Bar className="bar-feature" />
+          <p>my features</p>
+           {selectedFile && <FileProcess file={selectedFile} />}
           {/* Additional features can be added here */}
-          <p>Add your features here!</p>
+          <div className="feature-input-container">
+            <FileUpload onFileSelect={handleFileSelect} />
+           
+          </div>
         </div>
 
         {/* Chat and AI container aligned to the right */}
         <div className="chat-container">
           <div className="tab-selector">
-            <button 
-              className={`tab-button ${activeTab === 'chat' ? 'active' : ''}`} 
+            <button
+              className={`tab-button ${activeTab === 'chat' ? 'active' : ''}`}
               onClick={() => setActiveTab('chat')}
             >
               Chat
             </button>
-            <button 
-              className={`tab-button ${activeTab === 'ai' ? 'active' : ''}`} 
+            <button
+              className={`tab-button ${activeTab === 'ai' ? 'active' : ''}`}
               onClick={() => setActiveTab('ai')}
             >
               AI

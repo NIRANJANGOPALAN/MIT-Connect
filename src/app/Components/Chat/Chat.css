@@ -143,3 +143,20 @@ body, html {
          padding : px10 ;  
      }
 }
+
+.feature-input-container {
+   position: fixed;
+   bottom: 20px;
+   left: 20px;
+   background-color: #4f3deb;
+   padding: 5px;
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+   display: flex;
+   align-items: center;
+   border-radius: 8px;
+   max-width: 300px;
+   z-index: 1000;
+ }
+.bar-feature {
+   align-content: center;
+}

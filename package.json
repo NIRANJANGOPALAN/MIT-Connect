@@ -14,10 +14,13 @@
     "@google/generative-ai": "^0.19.0",
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.1",
+    "@mui/x-charts": "^7.18.0",
     "next": "14.2.5",
+    "papaparse": "^5.4.1",
     "react": "^18",
     "react-dom": "^18",
-    "socket.io-client": "^4.8.0"
+    "socket.io-client": "^4.8.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "eslint": "^8",
