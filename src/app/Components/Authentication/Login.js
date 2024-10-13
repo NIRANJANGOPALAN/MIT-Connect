@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import './Login.css'
 
 export default function Login({ onLogin }) {
@@ -44,6 +44,10 @@ export default function Login({ onLogin }) {
     setPassword('');
     setError('');
   };
+ 
+
+  
+
 
   return (
     <div className="login">
@@ -75,6 +79,9 @@ export default function Login({ onLogin }) {
           <button type="button" onClick={handleClear}>Clear</button>
         </div>
       </form>
+      <div>
+
+      </div>
     </div>
   );
 }

@@ -6,6 +6,10 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { IconButton, Tooltip } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+
+// For Floating bar
+
+
 import FileUpload from '../FileUpload/FileUpload';
 import FileProcess from '../FileProcess/FileProcess';
 import Bar from '../Charts/Bar';
@@ -152,6 +156,9 @@ export default function Chat({ username, sessionId, onLogout }) {
     linkElement.click();
   };
 
+  // For Floating bar
+  
+
   return (
     <div className="app-container">
       <header className="top-menu">
@@ -169,10 +176,8 @@ export default function Chat({ username, sessionId, onLogout }) {
           <p>my features</p>
            {selectedFile && <FileProcess file={selectedFile} />}
           {/* Additional features can be added here */}
-          <div className="feature-input-container">
+          
             <FileUpload onFileSelect={handleFileSelect} />
-           
-          </div>
         </div>
 
         {/* Chat and AI container aligned to the right */}
