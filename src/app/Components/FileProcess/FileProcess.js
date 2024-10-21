@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import * as XLSX from 'xlsx';
-import Papa from 'papaparse';
+import React, { useState, useEffect } from 'react';
+import { Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress } from '@mui/material';
+import styles from './FileProcess.module.css';
 
-const FileProcess = ({ file }) => {
-  const [totalRecords, setTotalRecords] = useState(0);
+export default function FileProcess({ file }) {
   const [headers, setHeaders] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (file) {
@@ -14,56 +15,64 @@ const FileProcess = ({ file }) => {
     }
   }, [file]);
 
-  const processFile = (file) => {
-    const reader = new FileReader();
+  const processFile = async (file) => {
+    setIsLoading(true);
+    setError(null);
+    const formData = new FormData();
+    formData.append('file', file);
 
-    reader.onload = (e) => {
-      const data = e.target.result;
-      if (file.name.endsWith('.csv')) {
-        processCsv(data);
-      } else if (file.name.endsWith('.xls') || file.name.endsWith('.xlsx')) {
-        processExcel(data);
+    try {
+      const response = await fetch('http://localhost:5000/process-file', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('File processing failed');
       }
-    };
 
-    if (file.name.endsWith('.csv')) {
-      reader.readAsText(file);
-    } else {
-      reader.readAsArrayBuffer(file);
+      const data = await response.json();
+      console.log(data);
+      setHeaders(data);
+    } catch (err) {
+      console.error('Error processing file:', err);
+      setError('Failed to process file. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const processCsv = (data) => {
-    Papa.parse(data, {
-      complete: (result) => {
-        setTotalRecords(result.data.length - 1); // Subtract 1 to exclude header row
-        setHeaders(result.data[0]);
-      }
-    });
-  };
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
-  const processExcel = (data) => {
-    const workbook = XLSX.read(data, { type: 'array' });
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    setTotalRecords(jsonData.length - 1); // Subtract 1 to exclude header row
-    setHeaders(jsonData[0]);
-  };
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
+  }
 
   return (
-    <div>
-      <h2>File Processing Results</h2>
-      <p>Total Records: {totalRecords}</p>
-      <h3>Headers:</h3>
-      <ul>
-        {headers.map((header, index) => (
-          <li key={index}>{header}</li>
-        ))}
-      </ul>
-    </div>
+    <Paper elevation={3} className={styles.paper}>
+      <Typography variant="h6" gutterBottom className={styles.title}>
+        File Headers and Data Types
+      </Typography>
+      <TableContainer className={styles.tableContainer}>
+        <Table size="small" className={styles.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell className={styles.headerCell}>Header Name</TableCell>
+              <TableCell className={styles.headerCell}>Data Type</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {headers.map((header, index) => (
+              <TableRow key={index}>
+                <TableCell className={styles.cell}>{header.name}</TableCell>
+                <TableCell className={styles.cell}>{header.type}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
-};
-
-export default FileProcess;
+}

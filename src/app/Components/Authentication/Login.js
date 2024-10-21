@@ -48,7 +48,6 @@ export default function Login({ onLogin }) {
 
   
 
-
   return (
     <div className="login">
       <h2>Login</h2>

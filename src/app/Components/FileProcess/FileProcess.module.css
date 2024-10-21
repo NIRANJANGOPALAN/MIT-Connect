@@ -1,0 +1,29 @@
+.paper {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 16px;
+  }
+  
+  .title {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+  
+  .tableContainer {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .table {
+    min-width: 300px;
+  }
+  
+  .headerCell {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  
+  .cell {
+    font-size: 0.8rem;
+  }
