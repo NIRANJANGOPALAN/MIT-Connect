@@ -5,7 +5,7 @@ import { Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHe
 import styles from './FileProcess.module.css';
 
 export default function FileProcess({ file }) {
-  const [headers, setHeaders] = useState([]);
+  const [fileData, setFileData] = useState({ headers: [], correlation_matrix: {} });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -32,8 +32,7 @@ export default function FileProcess({ file }) {
       }
 
       const data = await response.json();
-      console.log(data);
-      setHeaders(data);
+      setFileData(data);
     } catch (err) {
       console.error('Error processing file:', err);
       setError('Failed to process file. Please try again.');
@@ -64,7 +63,7 @@ export default function FileProcess({ file }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {headers.map((header, index) => (
+            {fileData.headers.map((header, index) => (
               <TableRow key={index}>
                 <TableCell className={styles.cell}>{header.name}</TableCell>
                 <TableCell className={styles.cell}>{header.type}</TableCell>

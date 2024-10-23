@@ -9,6 +9,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import FileUpload from '../FileUpload/FileUpload';
 import FileProcess from '../FileProcess/FileProcess';
+import CorrelationMatrix from '../Charts/CorrelationMatrix';
 import Bar from '../Charts/Bar';
 import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
 import DbConnector from '../DBConnector/DbConnector';
@@ -17,7 +18,7 @@ import "./Chat.css";
 const genAI = new GoogleGenerativeAI('AIzaSyC_IfQGhoWi03gsMAlhSJyCd1LXx8i_xbA');
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-export default function Chat({ username,sessionId, onLogout }) {
+export default function Chat({ username, sessionId, onLogout }) {
   const [aiInput, setAiInput] = useState('');
   const [aiMessages, setAiMessages] = useState([]);
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -25,7 +26,7 @@ export default function Chat({ username,sessionId, onLogout }) {
   const [isAiChatOpen, setIsAiChatOpen] = useState(false);
   const aiMessagesEndRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  
+
 
   useEffect(() => {
     if (isAiChatOpen) {
@@ -94,12 +95,20 @@ export default function Chat({ username,sessionId, onLogout }) {
       </header>
 
       <main className="main-content">
-      <div className="feature-area">
-          {/* <Bar className="bar-feature" /> */}
+        <div className="feature-area">
           <p>my features</p>
-          <h3>DB Connector</h3>
-          <DbConnector />
-          {selectedFile && <FileProcess file={selectedFile} />}
+          <div className="content-container">
+            {selectedFile && (
+              <>
+                <div className="left-panel">
+                  <FileProcess file={selectedFile} />
+                </div>
+                <div className="right-panel">
+                  <CorrelationMatrix file={selectedFile} />
+                </div>
+              </>
+            )}
+          </div>
           <FileUpload onFileSelect={handleFileSelect} />
         </div>
 

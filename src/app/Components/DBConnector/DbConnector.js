@@ -17,6 +17,7 @@ export default function DbConnector() {
       body: JSON.stringify({ dbType, host, port, username, password, database }),
     });
     const data = await response.json();
+    console.log("db tables",data);
     if (data.tables) {
       setTables(data.tables);
     }
