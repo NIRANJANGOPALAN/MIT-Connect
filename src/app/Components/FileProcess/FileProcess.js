@@ -5,7 +5,7 @@ import { Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHe
 import styles from './FileProcess.module.css';
 
 export default function FileProcess({ file }) {
-  const [fileData, setFileData] = useState({ headers: [], correlation_matrix: {} });
+  const [fileData, setFileData] = useState({ headers: [], correlation_matrix: {},chart_data: {} });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 

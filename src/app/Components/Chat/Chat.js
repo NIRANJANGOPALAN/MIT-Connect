@@ -13,6 +13,7 @@ import CorrelationMatrix from '../Charts/CorrelationMatrix';
 import Bar from '../Charts/Bar';
 import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
 import DbConnector from '../DBConnector/DbConnector';
+import Visuals from '../Charts/Visuals';
 import "./Chat.css";
 
 const genAI = new GoogleGenerativeAI('AIzaSyC_IfQGhoWi03gsMAlhSJyCd1LXx8i_xbA');
@@ -108,7 +109,10 @@ export default function Chat({ username, sessionId, onLogout }) {
                 </div>
               </>
             )}
-          </div>
+            
+           
+           
+          </div> {selectedFile && <Visuals file={selectedFile} />}
           <FileUpload onFileSelect={handleFileSelect} />
         </div>
 
