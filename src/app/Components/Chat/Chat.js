@@ -98,6 +98,7 @@ export default function Chat({ username, sessionId, onLogout }) {
       <main className="main-content">
         <div className="feature-area">
           <p>my features</p>
+          <DbConnector /> 
           <div className="content-container">
             {selectedFile && (
               <>

@@ -11,17 +11,13 @@
    line-height: 1.4;
  }
  
- .app-container {
-   display: flex;
-   flex-direction: column;
-   height: 100vh;
- }
+
  
  .top-menu {
    display: flex;
    justify-content: space-between;
    align-items: center;
-   padding: 10px 20px;
+   padding: 20px 20px;
    background-color: #2f0047;
    color: white;
  }

@@ -32,6 +32,7 @@ export default function DbConnector() {
           <option value="mysql">MySQL</option>
           <option value="oracle">Oracle</option>
           <option value="sqlserver">SQL Server</option>
+          <option value="mongodb">Mongo DB</option>
         </select>
         <input type="text" placeholder="Host" value={host} onChange={(e) => setHost(e.target.value)} />
         <input type="text" placeholder="Port" value={port} onChange={(e) => setPort(e.target.value)} />

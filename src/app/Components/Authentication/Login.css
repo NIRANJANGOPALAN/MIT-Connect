@@ -6,21 +6,10 @@ body {
     background-color: #F5F5F5; /* Light Gray */
     color: #333; /* Dark Gray for text */
   }
-  .container {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
-  }
+
   
   /* Login Styles */
-  .login, .chat-container {
-    background-color: #FFFFFF; /* White */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
+ 
   
   .login h2, .chat-room h2 {
     margin-top: 0;
@@ -50,9 +39,20 @@ body {
   
   .button-group {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 10px;
   }
-  
+  .long-textarea {
+    width: 350px; /* Adjust this value to make it shorter or longer */
+    min-height: 100px; /* Minimum height */
+    resize: horizontal; /* Allows vertical resizing */
+    font-family: 'Arial', sans-serif;
+    padding: 10px;
+    border: 2px solid #0033A0; /* Navy Blue border */
+    border-radius: 4px;
+    background-color: #F5F5F5; /* Light Gray for input */
+    color: #333; /* Dark Gray */
+  }
   button {
     padding: 10px 20px;
     background-color: #C8102E; /* Crimson Red */

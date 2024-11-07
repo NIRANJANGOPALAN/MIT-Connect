@@ -32,6 +32,7 @@ export default function FileProcess({ file }) {
       }
 
       const data = await response.json();
+      console.log("file process data",data);
       setFileData(data);
     } catch (err) {
       console.error('Error processing file:', err);

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './Login.css'
+import UserForm from '../Utilities/UserForm';
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState('');
@@ -34,7 +35,7 @@ export default function Login({ onLogin }) {
         setError(data.message || 'Login failed');
       }
     } catch (error) {
-      console.log("password",password);
+      console.log("password", password);
       setError('An error occurred. Please try again.');
     }
   };
@@ -44,9 +45,9 @@ export default function Login({ onLogin }) {
     setPassword('');
     setError('');
   };
- 
 
-  
+
+
 
   return (
     <div className="login">
@@ -79,7 +80,7 @@ export default function Login({ onLogin }) {
         </div>
       </form>
       <div>
-
+       <UserForm />
       </div>
     </div>
   );
