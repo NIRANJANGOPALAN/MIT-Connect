@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import './page.css'
 import Login from './Components/Authentication/Login';
 import Chat from './Components/Chat/Chat';
+import { API_BASE_URL } from './API/Config';
 
 export default function Home() {
   const [username, setUsername] = useState('');
@@ -27,7 +28,7 @@ export default function Home() {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:5000/auth/logout', {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
