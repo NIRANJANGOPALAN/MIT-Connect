@@ -98,10 +98,10 @@ export default function Chat({ username, sessionId, onLogout }) {
       <main className="main-content">
         <div className="feature-area">
           <p>DB features</p>
-          <DbConnector /> 
+          <DbConnector />
           <div className="content-container">
             {selectedFile && (
-              <>  
+              <>
                 <div className="left-panel">
                   <FileProcess file={selectedFile} />
                 </div>
@@ -110,25 +110,25 @@ export default function Chat({ username, sessionId, onLogout }) {
                 </div>
               </>
             )}
-            
-           
-           
+
+
+
           </div> {selectedFile && <Visuals file={selectedFile} />}
           <FileUpload onFileSelect={handleFileSelect} />
         </div>
 
         {/* AI Chat Icon */}
-        <Fab
+        {/* <Fab
           color="primary"
           aria-label="chat"
           className="ai-chat-fab"
           onClick={toggleAiChat}
         >
           <ChatIcon />
-        </Fab>
+        </Fab> */}
 
         {/* AI Chat Container */}
-        {isAiChatOpen && (
+        {/* {isAiChatOpen && (
           <div className="ai-chat-container">
             <div className="ai-chat-header">
               <h3>AI Chat</h3>
@@ -168,7 +168,7 @@ export default function Chat({ username, sessionId, onLogout }) {
               </Tooltip>
             </form>
           </div>
-        )}
+        )} */}
       </main>
     </div>
   );

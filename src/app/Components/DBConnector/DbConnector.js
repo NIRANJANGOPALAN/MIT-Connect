@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import styles from './DbConnector.module.css';
 
 export default function DbConnector() {
@@ -16,6 +18,7 @@ export default function DbConnector() {
   const [tableRecords, setTableRecords] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [downloadFormat, setDownloadFormat] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,12 +62,59 @@ export default function DbConnector() {
     });
     const data = await response.json();
     setTableRecords(data.records);
+    console.log("show records", data.records);
     setTotalPages(Math.ceil(data.totalRecords / 10));
   };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     handleShowRecords();
+  };
+
+  
+
+  // Function to download Excel
+  const downloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(tableRecords);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, selectedTable);
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(blob, `${selectedTable}.xlsx`);
+  };
+
+  // Function to download CSV
+  const downloadCSV = () => {
+    const worksheet = XLSX.utils.json_to_sheet(tableRecords);
+    const csv = XLSX.utils.sheet_to_csv(worksheet);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, `${selectedTable}.csv`);
+  };
+
+  // Function to download JSON
+  const downloadJSON = () => {
+    const json = JSON.stringify(tableRecords, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    saveAs(blob, `${selectedTable}.json`);
+  };
+
+  // Handle downloading table records
+  const handleDownload = () => {
+    if (!tableRecords || tableRecords.length === 0) return;
+
+    switch (downloadFormat) {
+      case 'excel':
+        downloadExcel();
+        break;
+      case 'csv':
+        downloadCSV();
+        break;
+      case 'json':
+        downloadJSON();
+        break;
+      default:
+        alert('Please select a format to download.');
+    }
   };
 
   return (
@@ -171,7 +221,23 @@ export default function DbConnector() {
               </ul>
               
               <button onClick={handleShowRecords} className={styles.button}>Show Records</button>
-              
+              {tableRecords && (
+                <div className={styles.downloadContainer}>
+                <select 
+                  value={downloadFormat} 
+                  onChange={(e) => setDownloadFormat(e.target.value)} 
+                  className={styles.select}
+                >
+                  <option value="">Select Download Format</option>
+                  <option value="excel">Excel (.xlsx)</option>
+                  <option value="csv">CSV (.csv)</option>
+                  <option value="json">JSON (.json)</option>
+                </select>
+                <button onClick={handleDownload} className={styles.button}>
+                  Download
+                </button>
+              </div>
+              )}
               {tableRecords && (
                 <div className={styles.tableRecordsContainer}>
                   <h3>Table Records:</h3>
