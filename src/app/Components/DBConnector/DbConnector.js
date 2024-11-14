@@ -47,6 +47,7 @@ export default function DbConnector() {
     setTableDetails(data);
     setTableRecords(null);
     setCurrentPage(1);
+    console.log("summary", data);
   };
 
   const handleShowRecords = async () => {
@@ -71,7 +72,7 @@ export default function DbConnector() {
     handleShowRecords();
   };
 
-  
+
 
   // Function to download Excel
   const downloadExcel = () => {
@@ -121,8 +122,8 @@ export default function DbConnector() {
     <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.inputGroup}>
-          <select 
-            value={dbType} 
+          <select
+            value={dbType}
             onChange={(e) => setDbType(e.target.value)}
             className={styles.select}
           >
@@ -132,53 +133,53 @@ export default function DbConnector() {
             <option value="oracle">Oracle</option>
             <option value="sqlserver">SQL Server</option>
           </select>
-          <input 
-            type="text" 
-            placeholder="Host" 
-            value={host} 
+          <input
+            type="text"
+            placeholder="Host"
+            value={host}
             onChange={(e) => setHost(e.target.value)}
             className={styles.input}
           />
-          <input 
-            type="text" 
-            placeholder="Port" 
-            value={port} 
+          <input
+            type="text"
+            placeholder="Port"
+            value={port}
             onChange={(e) => setPort(e.target.value)}
             className={styles.input}
           />
-          <input 
-            type="text" 
-            placeholder="Username" 
-            value={username} 
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
             className={styles.input}
           />
-          <input 
-            type="password" 
-            placeholder="Password" 
-            value={password} 
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={styles.input}
           />
-          <input 
-            type="text" 
-            placeholder="Database" 
-            value={database} 
+          <input
+            type="text"
+            placeholder="Database"
+            value={database}
             onChange={(e) => setDatabase(e.target.value)}
             className={styles.input}
           />
           <button type="submit" className={styles.button}>Connect</button>
         </div>
       </form>
-      
+
       <div className={styles.contentWrapper}>
         {tables.length > 0 && (
           <div className={styles.tableListContainer}>
             <h2 className={styles.tableListTitle}>Tables:</h2>
             <ul className={styles.tableList}>
-              {tables.map((table, index) => (
-                <li 
-                  key={index} 
+              {tables.slice(0, tables.length).map((table, index) => (
+                <li
+                  key={index}
                   className={`${styles.tableListItem} ${selectedTable === table ? styles.selectedTable : ''}`}
                   onClick={() => handleTableSelect(table)}
                 >
@@ -219,24 +220,46 @@ export default function DbConnector() {
                   </li>
                 ))}
               </ul>
-              
+              {/* Descriptive Summary Section */}
+              {tableDetails && tableDetails.summary && (
+                <div className={styles.summaryContainer}>
+                  <h3>Descriptive Summary:</h3>
+                  {Object.entries(tableDetails.summary).map(([column, stats]) => (
+                    <div key={column} className={styles.columnSummary}>
+                      <h4>{column}</h4>
+                      <table className={styles.summaryTable}>
+                        <tbody>
+                          {Object.entries(stats).map(([stat, value]) => (
+                            <tr key={stat}>
+                              <td>{stat}</td>
+                              <td>{value}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+
               <button onClick={handleShowRecords} className={styles.button}>Show Records</button>
               {tableRecords && (
                 <div className={styles.downloadContainer}>
-                <select 
-                  value={downloadFormat} 
-                  onChange={(e) => setDownloadFormat(e.target.value)} 
-                  className={styles.select}
-                >
-                  <option value="">Select Download Format</option>
-                  <option value="excel">Excel (.xlsx)</option>
-                  <option value="csv">CSV (.csv)</option>
-                  <option value="json">JSON (.json)</option>
-                </select>
-                <button onClick={handleDownload} className={styles.button}>
-                  Download
-                </button>
-              </div>
+                  <select
+                    value={downloadFormat}
+                    onChange={(e) => setDownloadFormat(e.target.value)}
+                    className={styles.select}
+                  >
+                    <option value="">Select Download Format</option>
+                    <option value="excel">Excel (.xlsx)</option>
+                    <option value="csv">CSV (.csv)</option>
+                    <option value="json">JSON (.json)</option>
+                  </select>
+                  <button onClick={handleDownload} className={styles.button}>
+                    Download
+                  </button>
+                </div>
               )}
               {tableRecords && (
                 <div className={styles.tableRecordsContainer}>
@@ -260,15 +283,15 @@ export default function DbConnector() {
                     </tbody>
                   </table>
                   <div className={styles.pagination}>
-                    <button 
-                      onClick={() => handlePageChange(currentPage - 1)} 
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
                     >
                       Previous
                     </button>
                     <span>Page {currentPage} of {totalPages}</span>
-                    <button 
-                      onClick={() => handlePageChange(currentPage + 1)} 
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
                     >
                       Next

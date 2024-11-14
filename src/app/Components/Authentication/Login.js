@@ -46,41 +46,42 @@ export default function Login({ onLogin }) {
     setError('');
   };
 
-
-
-
   return (
-    <div className="login">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            placeholder="Enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        {error && <div className="error">{error}</div>}
-        <div className="button-group">
-          <button type="submit">Submit</button>
-          <button type="button" onClick={handleClear}>Clear</button>
-        </div>
-      </form>
-      <div>
-       <UserForm />
+    <div className="page-container">
+      <h1 className="page-title">Welcome to DaVis</h1>
+      <div className="login">
+        <h2>Login</h2>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="username">Username:</label>
+            <input
+              type="text"
+              id="username"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          {error && <div className="error">{error}</div>}
+          <div className="button-group">
+            <button type="submit">Submit</button>
+            <button type="button" onClick={handleClear}>Clear</button>
+          </div>
+        </form>
+
+      </div>
+      <div className="footer">
+        &copy; 2024 Visionary Arts Company, Made in Birmingham, England, UK.
       </div>
     </div>
   );

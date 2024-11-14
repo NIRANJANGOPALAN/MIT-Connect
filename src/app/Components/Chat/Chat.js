@@ -15,6 +15,7 @@ import { useLocalStorage } from '../useLocalStorage/useLocalStorage';
 import DbConnector from '../DBConnector/DbConnector';
 import Visuals from '../Charts/Visuals';
 import "./Chat.css";
+import { API_BASE_URL } from '@/app/API/Config';
 
 const genAI = new GoogleGenerativeAI('AIzaSyC_IfQGhoWi03gsMAlhSJyCd1LXx8i_xbA');
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -39,28 +40,53 @@ export default function Chat({ username, sessionId, onLogout }) {
     aiMessagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleAiSubmit = async (e) => {
-    e.preventDefault();
-    if (aiInput.trim()) {
-      setIsAiLoading(true);
-      const userMessage = { role: 'user', content: aiInput };
-      setAiMessages(prev => [...prev, userMessage]);
-      setAiInput('');
-      try {
-        const result = await model.generateContent(aiInput);
-        const response = await result.response;
-        const aiMessage = { role: 'ai', content: response.text() };
-        setAiMessages(prev => [...prev, aiMessage]);
-        setConversation(prev => [...prev, { username, userMessage: userMessage.content, aiMessage: aiMessage.content }]);
-      } catch (error) {
-        console.error('Error:', error);
-        const errorMessage = { role: 'ai', content: 'An error occurred while processing your request.' };
-        setAiMessages(prev => [...prev, errorMessage]);
-      } finally {
-        setIsAiLoading(false);
+// Handle input submission to generate SQL query (CHANGED)
+const handleAiSubmit = async (e) => {
+  e.preventDefault();
+  if (aiInput.trim()) {
+    setIsAiLoading(true);
+
+    // Add user's message to the chat (CHANGED)
+    const userMessage = { role: 'user', content: aiInput };
+    setAiMessages((prev) => [...prev, userMessage]);
+    setAiInput('');
+
+    try {
+      // Send the prompt to the backend API to get the generated SQL query (CHANGED)
+      const response = await fetch(`${API_BASE_URL}/api/generate-sql-query`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: aiInput }),
+      });
+
+      const data = await response.json();
+
+      // Check if the response was successful (CHANGED)
+      if (response.ok && data.query) {
+        const aiMessage = { role: 'ai', content: data.query };
+        setAiMessages((prev) => [...prev, aiMessage]);
+        setConversation((prev) => [
+          ...prev,
+          { username, userMessage: userMessage.content, aiMessage: aiMessage.content },
+        ]);
+      } else {
+        throw new Error(data.error || 'Failed to generate SQL query');
       }
+    } catch (error) {
+      console.error('Error:', error);
+      const errorMessage = {
+        role: 'ai',
+        content: 'An error occurred while generating the SQL query.',
+      };
+      setAiMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsAiLoading(false);
     }
-  };
+  }
+};
+
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
@@ -117,21 +143,16 @@ export default function Chat({ username, sessionId, onLogout }) {
           <FileUpload onFileSelect={handleFileSelect} />
         </div>
 
-        {/* AI Chat Icon */}
-        {/* <Fab
-          color="primary"
-          aria-label="chat"
-          className="ai-chat-fab"
-          onClick={toggleAiChat}
-        >
+      {/* AI Chat Toggle Button (UNCHANGED) */}
+      <Fab color="primary" aria-label="chat" className="ai-chat-fab" onClick={toggleAiChat}>
           <ChatIcon />
-        </Fab> */}
+        </Fab>
 
-        {/* AI Chat Container */}
-        {/* {isAiChatOpen && (
+        {/* AI Chat Container (CHANGED) */}
+        {isAiChatOpen && (
           <div className="ai-chat-container">
             <div className="ai-chat-header">
-              <h3>AI Chat</h3>
+              <h3>SQL Query Generator</h3>
               <Tooltip title="Download Conversation">
                 <IconButton onClick={downloadConversation}>
                   <DownloadIcon />
@@ -141,6 +162,8 @@ export default function Chat({ username, sessionId, onLogout }) {
                 <CloseIcon />
               </IconButton>
             </div>
+
+            {/* AI Messages Display (CHANGED) */}
             <div className="ai-messages">
               {aiMessages.map((msg, index) => (
                 <div key={index} className={`ai-message ${msg.role}`}>
@@ -149,18 +172,19 @@ export default function Chat({ username, sessionId, onLogout }) {
               ))}
               <div ref={aiMessagesEndRef} />
             </div>
+
+            {/* Form to input prompt and generate query (CHANGED) */}
             <form onSubmit={handleAiSubmit} className="ai-input-form">
               <input
                 type="text"
                 value={aiInput}
                 onChange={(e) => setAiInput(e.target.value)}
-                placeholder="Ask AI something..."
+                placeholder="Type your prompt..."
                 className="ai-input"
               />
               <button type="submit" className="ai-send-button" disabled={isAiLoading}>
-                {isAiLoading ? 'Processing...' : 'Ask AI'}
+                {isAiLoading ? 'Generating...' : 'Ask'}
               </button>
-
               <Tooltip title="Clear Chat">
                 <IconButton onClick={clearAiChat}>
                   <DeleteSweepIcon />
@@ -168,7 +192,7 @@ export default function Chat({ username, sessionId, onLogout }) {
               </Tooltip>
             </form>
           </div>
-        )} */}
+        )}
       </main>
     </div>
   );

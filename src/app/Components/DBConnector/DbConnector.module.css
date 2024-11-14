@@ -43,11 +43,14 @@
 
 .tableListContainer {
   margin-top: 2rem;
-  max-width: 200px;
-  background-color: #94bbe7;
-  border-radius: 8px;
+  max-width: 300px;
+  background-color: rgb(242, 243, 255);
+  border: solid rgb(104, 140, 248);
+  border-radius: 8px ;
   padding: 1.5rem;
   box-shadow: 2px 2px 4px rgba(255, 6, 6, 0.1);
+  max-height: 400px; /* Set a max height to stop the container from growing */
+  overflow-y: auto;  /* Enable scrolling if content exceeds max height */
 }
 
 .tableListTitle {
@@ -203,4 +206,28 @@
 
 .button:hover {
   background-color: #0056b3;
+}
+
+.summaryContainer {
+  margin-top: 20px;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+}
+
+.columnSummary {
+  margin-bottom: 20px;
+}
+
+.summaryTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.summaryTable td {
+  padding: 5px;
+  border: 1px solid #ddd;
+}
+
+.summaryTable tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
