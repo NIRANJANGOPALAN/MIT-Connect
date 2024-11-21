@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useRef } from 'react';
 import './Login.css'
 import UserForm from '../Utilities/UserForm';
 
@@ -8,6 +8,7 @@ export default function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const loginRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,11 +47,32 @@ export default function Login({ onLogin }) {
     setError('');
   };
 
+  const scrollToLogin = () => {
+    loginRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="page-container">
       <h1 className="page-title">Welcome to DaVis</h1>
-      <div className="login">
-        <h2>Login</h2>
+
+      <div className="product-info">
+        <h2 className="main-headline">Discover the Power of Data with DaVis</h2>
+        <p>DaVis is a data exploration tool designed to revolutionize the way you interact with your data.</p>
+        <ul>
+          <li>Intuitive data visualization</li>
+          <li>Comprehensive data summaries</li>
+          <li>Advanced analytics capabilities</li>
+          <li>User-friendly interface</li>
+          <li>Seamless integration with various data sources</li>
+        </ul>
+        <div className="scroll-indicator" onClick={scrollToLogin}> 
+          <p>Scroll down to use DaVis</p>
+          <div className="arrow-down"></div>
+        </div>
+      </div>
+
+      <div className="login" ref={loginRef}>
+        <h2>Login here</h2>
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="username">Username:</label>
@@ -78,11 +100,19 @@ export default function Login({ onLogin }) {
             <button type="button" onClick={handleClear}>Clear</button>
           </div>
         </form>
-
+   
+      </div>
+      <div className='OtherContents'>
+        <p>Please Note:</p>
+        <p>This product is in development stage. You can use this product free for now.
+           </p>
+        <p>Try giving any username (please give your name) and password is Test01.</p>
+        <p>If you want to know more about this product mail to niranjangopalan948@gmail.com</p>
+        <p> Thank you. Enjoy!</p>
       </div>
       <div className="footer">
-        &copy; 2024 Visionary Arts Company, Made in Birmingham, England, UK.
-      </div>
+  &copy; 2024 <a href="https://wearevac.github.io/wearevac/">Visionary Arts Company</a>, Made in Birmingham, England, UK.
+</div>
     </div>
   );
 }

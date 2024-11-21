@@ -36,6 +36,13 @@ export default function DbConnector() {
     }
   };
 
+  const handleDisconnect = async (e) => {
+    setTables(0);
+    setSelectedTable(null);
+    setTableDetails(null);
+    setTableRecords(null);
+  }
+
   const handleTableSelect = async (tableName) => {
     setSelectedTable(tableName);
     const response = await fetch('http://localhost:5000/api/table-details', {
@@ -169,6 +176,7 @@ export default function DbConnector() {
             className={styles.input}
           />
           <button type="submit" className={styles.button}>Connect</button>
+          <button type="button" onClick={handleDisconnect} className={styles.button}>Disconnect</button>
         </div>
       </form>
 

@@ -6,6 +6,7 @@ import Login from './Components/Authentication/Login';
 import Chat from './Components/Chat/Chat';
 import { API_BASE_URL } from './API/Config';
 import GoogleAnalytics from './AI/GoogleAnalytics';
+import { ImportExport } from '@mui/icons-material';
 
 export default function Home() {
   const [username, setUsername] = useState('');
@@ -46,13 +47,13 @@ export default function Home() {
   };
 
   return (
-    <div className="container">
+    <>
       <GoogleAnalytics/>
       {username && sessionId ? (
         <Chat username={username} sessionId={sessionId} onLogout={handleLogout} />
       ) : (
         <Login onLogin={handleLogin} />
       )}
-    </div>
+    </>
   );
 }
