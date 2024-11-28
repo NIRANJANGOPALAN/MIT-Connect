@@ -19,13 +19,13 @@ const Visuals = ({ file }) => {
     if (file) {
       fetchData();
     }
-  }, [file]);
+  }, [file,fetchData]);
 
   useEffect(() => {
     if (chartData && selectedHeaderX) {
       drawChart();
     }
-  }, [chartData, selectedHeaderX, selectedHeaderY, chartType]);
+  }, [chartData, selectedHeaderX, selectedHeaderY, chartType, drawChart]);
 
   const fetchData = async () => {
     setIsLoading(true);
