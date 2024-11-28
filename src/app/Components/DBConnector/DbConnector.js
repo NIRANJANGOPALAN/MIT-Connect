@@ -143,12 +143,6 @@ export default function DbConnector() {
 
   return (
     <div className={styles.container}>
-      SUP_PWD = "*Vacdatabase42"
-      SUP_USER = "postgres.qisebayjszevjjlnwelu"
-      port = "6543"
-      SUP_HOST = "aws-0-eu-central-1.pooler.supabase.com"
-      SUP_DBNAME = "postgres"
-
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.inputGroup}>
           <select
