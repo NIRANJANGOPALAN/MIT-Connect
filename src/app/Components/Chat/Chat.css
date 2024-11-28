@@ -18,7 +18,7 @@
    justify-content: space-between;
    align-items: center;
    padding: 20px 20px;
-   background-color: #2f0047;
+   background-color: darkblue;
    color: white;
  }
  
@@ -138,6 +138,7 @@
    display: flex;
    padding: 10px;
    border-top: 1px solid #e0e0e0;
+   background-color: darkblue;
  }
  
  .chat-input,
@@ -169,6 +170,7 @@
  .bar-feature {
    margin-bottom: 20px;
  }
+
  
  @media (max-width: 768px) {
    .main-content {

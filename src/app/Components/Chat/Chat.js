@@ -17,6 +17,10 @@ import Visuals from '../Charts/Visuals';
 import "./Chat.css";
 import { API_BASE_URL } from '@/app/API/Config';
 
+
+import { DbConnectionProvider } from '../DBConnector/DBConnectionProvider';
+import Plots from '../UserCharts/Plots';
+
 const genAI = new GoogleGenerativeAI('AIzaSyC_IfQGhoWi03gsMAlhSJyCd1LXx8i_xbA');
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -114,7 +118,7 @@ const handleAiSubmit = async (e) => {
   return (
     <div className="app-container">
       <header className="top-menu">
-        <h1 className="app-title">VAC-Connect</h1>
+        <h1 className="app-title">DaVis-Explore</h1>
         <div className="user-info">
           Logged in as: <span className="username">{username}</span>
           <button onClick={onLogout} className="logout-button">Logout</button>
@@ -124,7 +128,12 @@ const handleAiSubmit = async (e) => {
       <main className="main-content">
         <div className="feature-area">
           <p>DB features</p>
-          <DbConnector />
+          {/* <DbConnector /> */}
+          <DbConnectionProvider>
+      <div className="app-container">
+        <DbConnector />
+      </div>
+    </DbConnectionProvider>
           <div className="content-container">
             {selectedFile && (
               <>
@@ -152,7 +161,7 @@ const handleAiSubmit = async (e) => {
         {isAiChatOpen && (
           <div className="ai-chat-container">
             <div className="ai-chat-header">
-              <h3>SQL Query Generator</h3>
+              <h3>Generate your query here</h3>
               <Tooltip title="Download Conversation">
                 <IconButton onClick={downloadConversation}>
                   <DownloadIcon />

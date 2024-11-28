@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress } from '@mui/material';
 import styles from './FileProcess.module.css';
+import { API_BASE_URL } from '@/app/API/Config';
 
 export default function FileProcess({ file }) {
   const [fileData, setFileData] = useState({ headers: [], correlation_matrix: {},chart_data: {} });
@@ -22,7 +23,7 @@ export default function FileProcess({ file }) {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:5000/process-file', {
+      const response = await fetch(`${API_BASE_URL}/process-file`, {
         method: 'POST',
         body: formData,
       });

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Select, MenuItem, Paper, Typography, CircularProgress, Grid } from '@mui/material';
 import * as d3 from 'd3';
+import { API_BASE_URL } from '@/app/API/Config';
 
 const Visuals = ({ file }) => {
   const [headers, setHeaders] = useState([]);
@@ -33,7 +34,7 @@ const Visuals = ({ file }) => {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:5000/process-file', {
+      const response = await fetch(`${API_BASE_URL}/process-file`, {
         method: 'POST',
         body: formData,
       });

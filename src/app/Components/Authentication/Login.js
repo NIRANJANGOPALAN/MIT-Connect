@@ -3,6 +3,7 @@
 import { useState, useEffect,useRef } from 'react';
 import './Login.css'
 import UserForm from '../Utilities/UserForm';
+import { API_BASE_URL } from '@/app/API/Config';
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState('');
@@ -20,7 +21,7 @@ export default function Login({ onLogin }) {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +57,7 @@ export default function Login({ onLogin }) {
       <h1 className="page-title">Welcome to DaVis</h1>
 
       <div className="product-info">
-        <h2 className="main-headline">Discover the Power of Data with DaVis</h2>
+        <h2 className="main-headline">Discover the Power of Data</h2>
         <p>DaVis is a data exploration tool designed to revolutionize the way you interact with your data.</p>
         <ul>
           <li>Intuitive data visualization</li>
@@ -110,8 +111,8 @@ export default function Login({ onLogin }) {
         <p>If you want to know more about this product mail to niranjangopalan948@gmail.com</p>
         <p> Thank you. Enjoy!</p>
       </div>
-      <div className="footer">
-  &copy; 2024 <a href="https://wearevac.github.io/wearevac/">Visionary Arts Company</a>, Made in Birmingham, England, UK.
+      <div className="footer"> A Product of 
+ <a href="https://wearevac.github.io/wearevac/"> Visionary Arts Company</a>, Made in Birmingham, England, UK. &copy; 2024
 </div>
     </div>
   );

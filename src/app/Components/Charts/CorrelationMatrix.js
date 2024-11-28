@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { CircularProgress, Typography } from '@mui/material';
+import { API_BASE_URL } from '@/app/API/Config';
 
 const CorrelationMatrix = ({ file }) => {
   const [correlationData, setCorrelationData] = useState(null);
@@ -29,7 +30,7 @@ const CorrelationMatrix = ({ file }) => {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:5000/process-file', {
+      const response = await fetch(`${API_BASE_URL}/process-file`, {
         method: 'POST',
         body: formData,
       });

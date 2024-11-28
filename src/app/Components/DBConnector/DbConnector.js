@@ -4,6 +4,10 @@ import { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import styles from './DbConnector.module.css';
+import { useDbConnection } from './DBConnectionProvider';
+import Plots from '../UserCharts/Plots';
+import { API_BASE_URL } from '@/app/API/Config';
+
 
 export default function DbConnector() {
   const [dbType, setDbType] = useState('');
@@ -20,9 +24,18 @@ export default function DbConnector() {
   const [totalPages, setTotalPages] = useState(0);
   const [downloadFormat, setDownloadFormat] = useState('');
 
+  const { updateConnectionDetails, updateSelectedTable } = useDbConnection();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:5000/api/connect', {
+    updateConnectionDetails({
+      dbType,
+      host,
+      port,
+      username,
+      password,
+      database
+    });
+    const response = await fetch(`${API_BASE_URL}/api/connect`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dbType, host, port, username, password, database }),
@@ -45,7 +58,8 @@ export default function DbConnector() {
 
   const handleTableSelect = async (tableName) => {
     setSelectedTable(tableName);
-    const response = await fetch('http://localhost:5000/api/table-details', {
+    updateSelectedTable(tableName);
+    const response = await fetch(`${API_BASE_URL}/api/table-details`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dbType, host, port, username, password, database, tableName }),
@@ -58,7 +72,7 @@ export default function DbConnector() {
   };
 
   const handleShowRecords = async () => {
-    const response = await fetch('http://localhost:5000/api/table-records', {
+    const response = await fetch(`${API_BASE_URL}/api/table-records`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -125,8 +139,16 @@ export default function DbConnector() {
     }
   };
 
+
+
   return (
     <div className={styles.container}>
+      SUP_PWD = "*Vacdatabase42"
+      SUP_USER = "postgres.qisebayjszevjjlnwelu"
+      port = "6543"
+      SUP_HOST = "aws-0-eu-central-1.pooler.supabase.com"
+      SUP_DBNAME = "postgres"
+
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.inputGroup}>
           <select
@@ -181,23 +203,29 @@ export default function DbConnector() {
       </form>
 
       <div className={styles.contentWrapper}>
-        {tables.length > 0 && (
-          <div className={styles.tableListContainer}>
-            <h2 className={styles.tableListTitle}>Tables:</h2>
-            <ul className={styles.tableList}>
-              {tables.slice(0, tables.length).map((table, index) => (
-                <li
-                  key={index}
-                  className={`${styles.tableListItem} ${selectedTable === table ? styles.selectedTable : ''}`}
-                  onClick={() => handleTableSelect(table)}
-                >
-                  {table}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <div className={styles.sideColumns}>
+          {tables.length > 0 && (
+            <div className={styles.tableListContainer}>
+              <h2 className={styles.tableListTitle}>Tables:</h2>
+              <ul className={styles.tableList}>
+                {tables.slice(0, tables.length).map((table, index) => (
+                  <li
+                    key={index}
+                    className={`${styles.tableListItem} ${selectedTable === table ? styles.selectedTable : ''}`}
+                    onClick={() => handleTableSelect(table)}
+                  >
+                    {table}
+                  </li>
+                ))}
+              </ul>
 
+            </div>
+          )}
+          <br></br>
+          {tableDetails && (
+            <Plots />
+          )}
+        </div>
         {tableDetails && (
           <div className={styles.tableDetailsContainer}>
             <h2 className={styles.tableDetailsTitle}>{selectedTable} Details:</h2>
@@ -206,7 +234,7 @@ export default function DbConnector() {
               <p>{tableDetails.recordCount || 'N/A'}</p>
               <h3>Columns:</h3>
               <ul>
-                {tableDetails.columns.map((column, index) => (
+                {(tableDetails?.columns || []).map((column, index) => (
                   <li key={index}>{column.name} ({column.type})</li>
                 ))}
               </ul>
@@ -214,7 +242,7 @@ export default function DbConnector() {
               <p>{tableDetails.primaryKey ? tableDetails.primaryKey.join(', ') : 'None'}</p>
               <h3>Foreign Keys:</h3>
               <ul>
-                {tableDetails.foreignKeys.map((fk, index) => (
+                {(tableDetails.foreignKeys || []).map((fk, index) => (
                   <li key={index}>
                     {fk.columns.join(', ')} references {fk.referredTable}
                   </li>
@@ -222,7 +250,7 @@ export default function DbConnector() {
               </ul>
               <h3>Indexes:</h3>
               <ul>
-                {tableDetails.indexes.map((index, idx) => (
+                {(tableDetails.indexes || []).map((index, idx) => (
                   <li key={idx}>
                     {index.name}: {index.columns.join(', ')}
                   </li>
@@ -307,10 +335,12 @@ export default function DbConnector() {
                   </div>
                 </div>
               )}
+
             </div>
           </div>
         )}
       </div>
+
     </div>
   );
 }

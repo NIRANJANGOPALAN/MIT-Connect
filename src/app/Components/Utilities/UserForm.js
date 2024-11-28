@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/app/API/Config';
 
 const UserForm = () => {
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const UserForm = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:5000/api/submit-query', {
+      const response = await fetch(`${API_BASE_URL}/api/submit-query`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
