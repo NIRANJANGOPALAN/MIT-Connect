@@ -59,6 +59,7 @@ const handleAiSubmit = async (e) => {
       // Send the prompt to the backend API to get the generated SQL query (CHANGED)
       const response = await fetch(`${API_BASE_URL}/api/generate-sql-query`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },

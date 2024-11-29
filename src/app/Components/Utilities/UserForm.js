@@ -25,6 +25,7 @@ const UserForm = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/submit-query`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },

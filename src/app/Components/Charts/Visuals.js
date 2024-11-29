@@ -36,6 +36,7 @@ const Visuals = ({ file }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/process-file`, {
         method: 'POST',
+        credentials: 'include',
         body: formData,
       });
       if (!response.ok) {

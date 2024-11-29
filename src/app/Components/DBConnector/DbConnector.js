@@ -37,6 +37,7 @@ export default function DbConnector() {
     });
     const response = await fetch(`${API_BASE_URL}/api/connect`, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dbType, host, port, username, password, database }),
     });
@@ -61,6 +62,7 @@ export default function DbConnector() {
     updateSelectedTable(tableName);
     const response = await fetch(`${API_BASE_URL}/api/table-details`, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ dbType, host, port, username, password, database, tableName }),
     });
@@ -74,6 +76,7 @@ export default function DbConnector() {
   const handleShowRecords = async () => {
     const response = await fetch(`${API_BASE_URL}/api/table-records`, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         dbType, host, port, username, password, database,
